@@ -37,14 +37,6 @@ class BackupLockstate(object):
         pass
 
 class BackupOrchestrator(object):
-    def execute(self, command):
-        result = subprocess.run(command, shell=True, capture_output=True)
-
-        if result.returncode != 0:
-            raise ExecutionError(result)
-        else:
-            print(result)
-
     def lock(self):
         self.havelock = self._lock.acquire(blocking=False)
         if self.havelock:
@@ -64,8 +56,20 @@ class BackupOrchestrator(object):
         print("Aqcuiring lock...")
         self._lock = fasteners.InterProcessLock(".masterlock.lck")
 
+
 class BackupTask(object):
-    pass
+
+    def __init__(self, command):
+        self.command = command
+
+    def run(self, command):
+        result = subprocess.run(command, shell=True, capture_output=True)
+
+        if result.returncode != 0:
+            raise ExecutionError(result)
+        else:
+            return result
+
 
 class BackupSequence(object):
     
@@ -77,7 +81,7 @@ class BackupSequence(object):
 
     def run(self):
         for task in self.tasks:
-            result = task.run
+            result = task.run()
             if result.successful:
                 self.summary += "** Status from %s: OK\n" % (result.taskName)
                 self.summary += result.stderr
