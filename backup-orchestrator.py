@@ -4,6 +4,7 @@
 import fasteners, time
 import smtplib
 import ssl
+import subprocess
 
 SMTP_SERVER = 'mx.services.ka.xcore.net'
 SMTP_PORT = 25
@@ -25,6 +26,9 @@ class BackupMailer(object):
         self.sender = SENDER_EMAIL
         self.receiver = RECEIVER_EMAIL
 
+class ExecutionError(Exception):
+    pass
+
 class LockingException(Exception):
     pass
 
@@ -33,6 +37,14 @@ class BackupLockstate(object):
         pass
 
 class BackupOrchestrator(object):
+    def execute(self, command):
+        result = subprocess.run(command, shell=True, capture_output=True)
+
+        if result.returncode != 0:
+            raise ExecutionError(result)
+        else:
+            print(result)
+
     def lock(self):
         self.havelock = self._lock.acquire(blocking=False)
         if self.havelock:
@@ -50,14 +62,47 @@ class BackupOrchestrator(object):
 
     def __init__(self):
         print("Aqcuiring lock...")
-        self._lock = fasteners.InterProcessLock("lockfile")
+        self._lock = fasteners.InterProcessLock(".masterlock.lck")
 
+class BackupTask(object):
+    pass
 
+class BackupSequence(object):
+    
+    def __init__(self, tasks):
+        self.orchestrator = BackupOrchestrator()
+        self.mailer = BackupMailer()
+        self.tasks = tasks
+        self.summary = ""
+
+    def run(self):
+        for task in self.tasks:
+            result = task.run
+            if result.successful:
+                self.summary += "** Status from %s: OK\n" % (result.taskName)
+                self.summary += result.stderr
+                self.summary += result.stdout
+                self.summary += "-------------------------------------"
+            else: 
+                self.summary += "** Status from %s: ERROR\n" % (result.taskName)
+                self.summary += result.stderr
+                self.summary += result.stdout
+                self.summary += "-------------------------------------"
+                
+                self.sendErrorMail(result)
+        self.sendSummary()
+                
+    def sendErrorMail(self, result):
+        raise NotImplemented()
+
+    def sendSummary(self)
+        raise NotImplemented()
 
 if __name__ == "__main__":
     print("Starting")
     bo = BackupOrchestrator()
     bo.lock()
+    bo.execute("ls foo")
     mailer = BackupMailer()
     mailer.send('[TEST]', 'this is a test e-mail')
     time.sleep(20)
