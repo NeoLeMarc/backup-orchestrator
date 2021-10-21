@@ -108,8 +108,10 @@ class BackupSequence(object):
 
 if __name__ == "__main__":
     print("Starting")
-    tasks = [BackupTask("FooBackup", "ls foo")]
+    tasks = []
+    tasks.append(BackupTask("Vault remote", "backup-vault-remote.sh"))
+    tasks.append(BackupTask("BTRFS local", "backup-btrfs-local.sh"))
+    tasks.append(BackupTask("BTRFS remote", "backup-trfs-remote.sh"))
     sequence = BackupSequence(tasks)
     sequence.run()
-    time.sleep(20)
     print("Done")
