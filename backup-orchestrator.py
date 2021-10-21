@@ -36,7 +36,7 @@ class BackupLockstate(object):
     def __init__(self):
         pass
 
-class BackupOrchestrator(object):
+class BackupLockManager(object):
     def lock(self):
         self.havelock = self._lock.acquire(blocking=False)
         if self.havelock:
@@ -59,55 +59,57 @@ class BackupOrchestrator(object):
 
 class BackupTask(object):
 
-    def __init__(self, command):
+    def __init__(self, name, command):
         self.command = command
+        self.name = name
 
-    def run(self, command):
-        result = subprocess.run(command, shell=True, capture_output=True)
+    def run(self):
+        result = subprocess.run(self.command, shell=True, capture_output=True)
+        result.taskName = self.name
 
         if result.returncode != 0:
-            raise ExecutionError(result)
+            result.successful = False 
         else:
-            return result
+            result.successful = True 
+        return result
 
 
 class BackupSequence(object):
     
     def __init__(self, tasks):
-        self.orchestrator = BackupOrchestrator()
+        self.lockManager = BackupLockManager()
         self.mailer = BackupMailer()
         self.tasks = tasks
         self.summary = ""
 
     def run(self):
+        self.lockManager.lock()
         for task in self.tasks:
             result = task.run()
             if result.successful:
-                self.summary += "** Status from %s: OK\n" % (result.taskName)
-                self.summary += result.stderr
-                self.summary += result.stdout
+                self.summary += "****** [%s] - OK\n" % (result.taskName)
+                self.summary += result.stderr.decode("utf-8")
+                self.summary += result.stdout.decode("utf-8")
                 self.summary += "-------------------------------------"
             else: 
-                self.summary += "** Status from %s: ERROR\n" % (result.taskName)
-                self.summary += result.stderr
-                self.summary += result.stdout
+                self.summary += "****** [%s] - ERROR\n" % (result.taskName)
+                self.summary += result.stderr.decode("utf-8")
+                self.summary += result.stdout.decode("utf-8")
                 self.summary += "-------------------------------------"
                 
                 self.sendErrorMail(result)
         self.sendSummary()
                 
     def sendErrorMail(self, result):
-        raise NotImplemented()
+        self.mailer.send("[BACKUP ERROR] Backup task (%s) failed" % result.taskName, result.stderr.decode("utf-8"))
 
-    def sendSummary(self)
-        raise NotImplemented()
+    def sendSummary(self):
+        self.mailer.send("[SUMMARY OF BACKUP] Backup completed", self.summary)
 
 if __name__ == "__main__":
     print("Starting")
-    bo = BackupOrchestrator()
-    bo.lock()
-    bo.execute("ls foo")
-    mailer = BackupMailer()
-    mailer.send('[TEST]', 'this is a test e-mail')
+    tasks = [BackupTask("FooBackup", "ls foo")]
+    sequence = BackupSequence(tasks)
+    sequence.run()
     time.sleep(20)
     print("Done")
