@@ -64,13 +64,17 @@ class BackupTask(object):
         self.name = name
 
     def run(self):
+        print("Running %s" % self.name)
         result = subprocess.run(self.command, shell=True, capture_output=True)
         result.taskName = self.name
 
         if result.returncode != 0:
             result.successful = False 
+            print("failed")
+            print(result.stderr)
         else:
             result.successful = True 
+            print("completed")
         return result
 
 
