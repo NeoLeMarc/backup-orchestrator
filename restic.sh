@@ -1,3 +1,4 @@
+#!/bin/bash
 ## Restic config
 export GODEBUG=asyncpreemptoff=1 # Fix for bugs caused by preempted interrupts
 export REMOTE_RESTIC="restic -r /mnt/rz-backup/polarstern-backup/restic -p /etc/restic-password"

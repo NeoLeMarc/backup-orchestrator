@@ -1,3 +1,4 @@
+#!/bin/bash
 set -x
 export GODEBUG=asyncpreemptoff=1 # Fix for bugs caused by preempted interrupts
 ## Prepare and mount
