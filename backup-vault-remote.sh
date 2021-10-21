@@ -26,10 +26,12 @@ $NOCLOUD_REMOTE_RESTIC_VAULT backup /vault/encrypted/.zfs/snapshot/backup_snapsh
 ## Cleanup
 $REMOTE_RESTIC_VAULT forget --keep-daily 7 --keep-weekly 5 --keep-monthly 12 --keep-yearly 5 
 case $(LC_ALL=C date +%a) in
-   (Thu)$REMOTE_RESTIC_VAULT prune;;
+   (Thu)$REMOTE_RESTIC_VAULT prune && $NOCLOUD_REMOTE_RESTIC_VAULT prune;;
    (*) echo No prune today;; # last ;; not necessary but doesn't harm
 esac
 $REMOTE_RESTIC_VAULT check
+$NOCLOUD_REMOTE_RESTIC_VAULT check
+
 date
 
 umount /mnt/rz-backup/polarstern-backup
