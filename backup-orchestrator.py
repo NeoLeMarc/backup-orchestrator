@@ -5,6 +5,8 @@ import fasteners, time
 import smtplib
 import ssl
 import subprocess
+import traceback
+import sys
 
 SMTP_SERVER = 'mx.services.ka.xcore.net'
 SMTP_PORT = 25
@@ -112,10 +114,16 @@ class BackupSequence(object):
 
 if __name__ == "__main__":
     print("Starting")
-    tasks = []
-    tasks.append(BackupTask("Vault remote", "./backup-vault-remote.sh"))
-    tasks.append(BackupTask("BTRFS local", "./backup-btrfs-local.sh"))
-    tasks.append(BackupTask("BTRFS remote", "./backup-btrfs-remote.sh"))
-    sequence = BackupSequence(tasks)
-    sequence.run()
-    print("Done")
+    try:
+        tasks = []
+        tasks.append(BackupTask("Vault remote", "./backup-vault-remote.sh"))
+        tasks.append(BackupTask("BTRFS local", "./backup-btrfs-local.sh"))
+        tasks.append(BackupTask("BTRFS remote", "./backup-btrfs-remote.sh"))
+        sequence = BackupSequence(tasks)
+        sequence.run()
+        print("Done")
+    except LockingException:
+        mailer = BackupMailer()
+        mailer.send("[BACKUP LOCK ERROR] Backup failed to acquire lock", traceback.format_exc())
+        print("Failed to acquire lock")
+        sys.exit(1)
