@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 #pip install fasteners
 
+# Author: Marcel Noe (https://github.com/NeoLeMarc)
+# License: GPL v3
 import fasteners, time
 import smtplib
 import ssl
