@@ -87,15 +87,15 @@ class BackupSequence(object):
         for task in self.tasks:
             result = task.run()
             if result.successful:
-                self.summary += "****** [%s] - OK\n" % (result.taskName)
+                self.summary += "\n****** [%s] - OK\n" % (result.taskName)
                 self.summary += result.stderr.decode("utf-8")
                 self.summary += result.stdout.decode("utf-8")
-                self.summary += "-------------------------------------"
+                self.summary += "\n-------------------------------------\n"
             else: 
-                self.summary += "****** [%s] - ERROR\n" % (result.taskName)
+                self.summary += "\n****** [%s] - ERROR\n" % (result.taskName)
                 self.summary += result.stderr.decode("utf-8")
                 self.summary += result.stdout.decode("utf-8")
-                self.summary += "-------------------------------------"
+                self.summary += "\n-------------------------------------\n"
                 
                 self.sendErrorMail(result)
         self.sendSummary()
