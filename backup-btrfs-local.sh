@@ -31,6 +31,13 @@ btrfs subvol snapshot -r /var/lib/libvirt/images /var/lib/libvirt/images/snapsho
 $ZFS_RESTIC backup /var/lib/libvirt/images/snapshot/ && \
 btrfs subvol delete /var/lib/libvirt/images/snapshot 
 
+## Backup /var/lib/libvirt/images/nosnapshot
+btrfs subvol delete /var/lib/libvirt/images/nosnapshot/snapshot 2>/dev/null
+btrfs subvol snapshot -r /var/lib/libvirt/images/nosnapshot /var/lib/libvirt/images/nosnapshot/snapshot && \
+$ZFS_RESTIC backup /var/lib/libvirt/images/nosnapshot/snapshot/ && \
+btrfs subvol delete /var/lib/libvirt/images/nosnapshot/snapshot 
+
+
 ## Backup /var/lib/libvirt/images/sata-images
 #btrfs subvol delete /var/lib/libvirt/images/sata-images/snapshot 2>/dev/null
 #btrfs subvol snapshot -r /var/lib/libvirt/images/sata-images /var/lib/libvirt/images/sata-images/snapshot && \

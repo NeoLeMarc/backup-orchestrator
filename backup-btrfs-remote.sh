@@ -30,6 +30,13 @@ btrfs subvol snapshot -r /var/lib/libvirt/images /var/lib/libvirt/images/remote-
 $REMOTE_RESTIC backup /var/lib/libvirt/images/remote-snapshot/ && \
 btrfs subvol delete /var/lib/libvirt/images/remote-snapshot 
 
+## Backup /var/lib/libvirt/images/nosnapshot
+btrfs subvol delete /var/lib/libvirt/images/nosnapshot/remote-snapshot 2>/dev/null
+btrfs subvol snapshot -r /var/lib/libvirt/images/nosnapshot /var/lib/libvirt/images/nosnapshot/remote-snapshot && \
+$REMOTE_RESTIC backup /var/lib/libvirt/images/nosnapshot/remote-snapshot/ && \
+btrfs subvol delete /var/lib/libvirt/images/nosnapshot/remote-snapshot
+
+
 ## Backup /var/lib/libvirt/images/sata-images
 #btrfs subvol delete /var/lib/libvirt/images/sata-images/remote-snapshot 2>/dev/null
 #btrfs subvol remote-snapshot -r /var/lib/libvirt/images/sata-images /var/lib/libvirt/images/sata-images/snapshot && \
