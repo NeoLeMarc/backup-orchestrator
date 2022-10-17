@@ -6,7 +6,7 @@ export GODEBUG=asyncpreemptoff=1 # Fix for bugs caused by preempted interrupts
 
 ## Wakeup rz-backup
 wakeonlan 00:11:32:c2:0a:4f 
-sleep 300
+sleep 400
 
 ## Prepare and mount
 date
