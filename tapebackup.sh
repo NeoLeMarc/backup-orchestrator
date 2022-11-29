@@ -25,4 +25,5 @@ ssh root@10.10.32.4 "./dump.sh $1"
 zfs destroy vault/encrypted@amanda_$1
 zfs destroy vault/backup@amanda_$1
 btrfs subvol delete /snapshot_amanda_$1
-
+btrfs subvol delete /home/snapshot_amanda_$1
+btrfs subvol snapshot -r /var/lib/libvirt/images /var/lib/libvirt/images/snapshot_amanda_$1
