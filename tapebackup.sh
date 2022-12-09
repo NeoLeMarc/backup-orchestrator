@@ -19,10 +19,10 @@ btrfs subvol delete /var/lib/libvirt/images/snapshot_amanda_$1
 btrfs subvol snapshot -r /var/lib/libvirt/images /var/lib/libvirt/images/snapshot_amanda_$1
 
 # Trigger amanda
-ssh backup@miranda.lan.ka.xcore.net "amcheck $1"
+ssh backup@miranda.lan.ka.xcore.net "/usr/sbin/amcheck $1"
 #echo "Press Enter"
 #read
-ssh backup@miranda.lan.xcore.net "amdump $1"
+ssh backup@miranda.lan.xcore.net "/usr/sbin/amdump $1"
 
 # Delete snapshot
 zfs destroy vault/encrypted@amanda_$1
