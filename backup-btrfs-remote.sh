@@ -55,7 +55,7 @@ $REMOTE_RESTIC backup /var/log/remote-snapshot/ && \
 btrfs subvol delete /var/log/remote-snapshot 
 
 ## Cleanup
-$REMOTE_RESTIC forget --keep-daily 7 --keep-weekly 5 --keep-monthly 12 --keep-yearly 5 
+$REMOTE_RESTIC forget --keep-daily 7 --keep-weekly 5 --keep-monthly 6 
 case $(LC_ALL=C date +%a) in
    (Thu)$REMOTE_RESTIC prune;;
    (*) echo No prune today;; # last ;; not necessary but doesn't harm

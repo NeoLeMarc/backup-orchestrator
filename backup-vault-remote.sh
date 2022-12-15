@@ -22,14 +22,13 @@ zfs snapshot vault/encrypted@backup_snapshot
 $REMOTE_RESTIC_VAULT backup /vault/encrypted/.zfs/snapshot/backup_snapshot/jennifer_marcel && \
 $REMOTE_RESTIC_VAULT backup /vault/encrypted/.zfs/snapshot/backup_snapshot/jennifer && \
 $REMOTE_RESTIC_VAULT backup /vault/encrypted/.zfs/snapshot/backup_snapshot/*.sh && \
-$REMOTE_RESTIC_VAULT backup /vault/encrypted/.zfs/snapshot/backup_snapshot/archive && \
+
 
 ## Backups that are not synced to cloud
-$NOCLOUD_REMOTE_RESTIC_VAULT backup /vault/encrypted/.zfs/snapshot/backup_snapshot/Incoming && \
-
+$NOCLOUD_REMOTE_RESTIC_VAULT backup /vault/encrypted/.zfs/snapshot/backup_snapshot/
 
 ## Cleanup
-$REMOTE_RESTIC_VAULT forget --keep-daily 7 --keep-weekly 5 --keep-monthly 12 --keep-yearly 5 
+$REMOTE_RESTIC_VAULT forget --keep-daily 7 --keep-weekly 5 --keep-monthly 6
 case $(LC_ALL=C date +%a) in
    (Thu)$REMOTE_RESTIC_VAULT prune && $NOCLOUD_REMOTE_RESTIC_VAULT prune;;
    (*) echo No prune today;; # last ;; not necessary but doesn't harm
