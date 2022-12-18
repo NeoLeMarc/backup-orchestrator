@@ -18,6 +18,9 @@ btrfs subvol snapshot -r /home /home/snapshot_amanda_$1
 btrfs subvol delete /var/lib/libvirt/images/snapshot_amanda_$1
 btrfs subvol snapshot -r /var/lib/libvirt/images /var/lib/libvirt/images/snapshot_amanda_$1
 
+# Show next tapes to use
+ssh backup@miranda.lan.ka.xcore.net "/usr/sbin/amadmin $1 tape"
+
 # Trigger amanda
 ssh backup@miranda.lan.ka.xcore.net "/usr/sbin/amcheck $1"
 #echo "Press Enter"
