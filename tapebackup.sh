@@ -20,6 +20,8 @@ btrfs subvol snapshot -r /var/lib/libvirt/images /var/lib/libvirt/images/snapsho
 
 # Show next tapes to use
 ssh backup@miranda.lan.ka.xcore.net "/usr/sbin/amadmin $1 tape"
+echo "Please stage tapes and press Enter"
+read
 
 # Trigger amanda
 ssh backup@miranda.lan.ka.xcore.net "/usr/sbin/amcheck $1"
