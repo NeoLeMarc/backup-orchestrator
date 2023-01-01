@@ -125,6 +125,7 @@ if __name__ == "__main__":
     try:
         tasks = []
         tasks.append(BackupTask("RSYNC VMs", "./rsync_vm_filesystems.sh"))
+        tasks.append(BackupTask("GDRIVE vaultwarden", "./vaultwarden_gdrive.sh"))
         tasks.append(BackupTask("BTRFS local", "./backup-btrfs-local.sh"))
         tasks.append(BackupTask("Vault remote", "./backup-vault-remote.sh"))
         tasks.append(BackupTask("BTRFS remote", "./backup-btrfs-remote.sh"))
