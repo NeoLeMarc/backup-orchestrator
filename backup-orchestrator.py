@@ -14,6 +14,8 @@ SMTP_SERVER = 'mx.services.ka.xcore.net'
 SMTP_PORT = 25
 SENDER_EMAIL = 'root@polarstern.lan.ka.xcore.net'
 RECEIVER_EMAIL = 'root@xcore.net'
+LOGFILE = '/var/log/backuporchestrator.log'
+
 
 class BackupMailer(object):
     def send(self, subject, message):
@@ -94,18 +96,22 @@ class BackupSequence(object):
         self.lockManager.lock()
         for task in self.tasks:
             result = task.run()
-            if result.successful:
-                self.summary += "\n****** [%s] - OK\n" % (result.taskName)
-                self.summary += result.stderr.decode("utf-8")
-                self.summary += result.stdout.decode("utf-8")
-                self.summary += "\n-------------------------------------\n"
-            else: 
-                self.summary += "\n****** [%s] - ERROR\n" % (result.taskName)
-                self.summary += result.stderr.decode("utf-8")
-                self.summary += result.stdout.decode("utf-8")
-                self.summary += "\n-------------------------------------\n"
-                
-                self.sendErrorMail(result)
+            with open(LOGFILE, 'a') as logfile:
+                summary = ""
+                if result.successful:
+                    summary += "\n****** [%s] - OK\n" % (result.taskName)
+                    summary += result.stderr.decode("utf-8")
+                    summary += result.stdout.decode("utf-8")
+                    summary += "\n-------------------------------------\n"
+                else: 
+                    summary += "\n****** [%s] - ERROR\n" % (result.taskName)
+                    summary += result.stderr.decode("utf-8")
+                    summary += result.stdout.decode("utf-8")
+                    summary += "\n-------------------------------------\n"
+                    
+                    self.sendErrorMail(result)
+                logfile.write(summary)
+                self.summary += summary
         self.sendSummary()
                 
     def sendErrorMail(self, result):
@@ -118,6 +124,7 @@ if __name__ == "__main__":
     print("Starting")
     try:
         tasks = []
+        tasks.append(BackupTask("RSYNC VMs", "./rsync_vm_filesystems.sh"))
         tasks.append(BackupTask("BTRFS local", "./backup-btrfs-local.sh"))
         tasks.append(BackupTask("Vault remote", "./backup-vault-remote.sh"))
         tasks.append(BackupTask("BTRFS remote", "./backup-btrfs-remote.sh"))
