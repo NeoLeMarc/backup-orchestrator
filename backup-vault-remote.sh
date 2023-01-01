@@ -15,7 +15,9 @@ diroffset=$(echo `date +"%d"`%2 | bc)
 mount /mnt/rz-backup/polarstern-backup
 
 ## Create snapshot
+set +e
 zfs destroy vault/encrypted@backup_snapshot
+set -e
 zfs snapshot vault/encrypted@backup_snapshot
 
 ## Backups that are synced to cloud

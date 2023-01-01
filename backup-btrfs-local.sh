@@ -14,25 +14,33 @@ zfs mount -la
 $ZFS_RESTIC backup /boot/ && \
 
 ## Backup /
+set +e
 btrfs subvol delete /snapshot 2>/dev/null
+set -e
 btrfs subvol snapshot -r / /snapshot && \
 $ZFS_RESTIC backup /snapshot/ --exclude="/root/.cache" && \
 btrfs subvol delete /snapshot 
 
 ## Backup /home
+set +e
 btrfs subvol delete /home/snapshot 2>/dev/null
+set -e
 btrfs subvol snapshot -r /home /home/snapshot && \
 $ZFS_RESTIC backup /home/snapshot/ --exclude="/home/snapshot/marcel/.steam"  --exclude="/home/snapshot/marcel/.bitcoin" --exclude="/home/snapshot/marcel/.cache" && \
 btrfs subvol delete /home/snapshot 
 
 ## Backup /var/lib/libvirt/images
+set +e
 btrfs subvol delete /var/lib/libvirt/images/snapshot 2>/dev/null
+set -e
 btrfs subvol snapshot -r /var/lib/libvirt/images /var/lib/libvirt/images/snapshot && \
 $ZFS_RESTIC backup /var/lib/libvirt/images/snapshot/ && \
 btrfs subvol delete /var/lib/libvirt/images/snapshot 
 
 ## Backup /var/lib/libvirt/images/nosnapshot
+set +e
 btrfs subvol delete /var/lib/libvirt/images/nosnapshot/snapshot 2>/dev/null
+set -e
 btrfs subvol snapshot -r /var/lib/libvirt/images/nosnapshot /var/lib/libvirt/images/nosnapshot/snapshot && \
 $ZFS_RESTIC backup /var/lib/libvirt/images/nosnapshot/snapshot/ && \
 btrfs subvol delete /var/lib/libvirt/images/nosnapshot/snapshot 
@@ -45,7 +53,9 @@ btrfs subvol delete /var/lib/libvirt/images/nosnapshot/snapshot
 #btrfs subvol delete /var/lib/libvirt/images/sata-images/snapshot 
 
 ## Backup /var/log
+set +e
 btrfs subvol delete /var/log/snapshot 2>/dev/null
+set -e
 btrfs subvol snapshot -r /var/log /var/log/snapshot && \
 $ZFS_RESTIC backup /var/log/snapshot/ && \
 btrfs subvol delete /var/log/snapshot 
