@@ -30,7 +30,7 @@ $REMOTE_RESTIC_VAULT backup /vault/encrypted/.zfs/snapshot/backup_snapshot/*.sh 
 $NOCLOUD_REMOTE_RESTIC_VAULT backup /vault/encrypted/.zfs/snapshot/backup_snapshot/
 
 ## Cleanup
-$REMOTE_RESTIC_VAULT forget --keep-daily 7 --keep-weekly 5 --keep-monthly 6
+$REMOTE_RESTIC_VAULT forget --keep-daily 7 --keep-weekly 5 --keep-monthly 2 
 case $(LC_ALL=C date +%a) in
    (Thu)$REMOTE_RESTIC_VAULT prune && $NOCLOUD_REMOTE_RESTIC_VAULT prune;;
    (*) echo No prune today;; # last ;; not necessary but doesn't harm

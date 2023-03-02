@@ -6,7 +6,7 @@
 import fasteners, time
 import smtplib
 import ssl
-import subprocess_tee as subprocess
+import subprocess as subprocess
 import traceback
 import sys
 
