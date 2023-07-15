@@ -22,28 +22,36 @@ $ZFS_RESTIC backup /snapshot/ --exclude="/root/.cache" && \
 btrfs subvol delete /snapshot 
 
 ## Backup /home
+#set +e
+#btrfs subvol delete /home/snapshot 2>/dev/null
+#set -e
+#btrfs subvol snapshot -r /home /home/snapshot && \
+#$ZFS_RESTIC backup /home/snapshot/ --exclude="/home/snapshot/marcel/.steam"  --exclude="/home/snapshot/marcel/.bitcoin" --exclude="/home/snapshot/marcel/.cache" && \
+#btrfs subvol delete /home/snapshot 
+
+## Backup /home
 set +e
-btrfs subvol delete /home/snapshot 2>/dev/null
+zfs destroy fastflash/home@backup_snapshot
 set -e
-btrfs subvol snapshot -r /home /home/snapshot && \
-$ZFS_RESTIC backup /home/snapshot/ --exclude="/home/snapshot/marcel/.steam"  --exclude="/home/snapshot/marcel/.bitcoin" --exclude="/home/snapshot/marcel/.cache" && \
-btrfs subvol delete /home/snapshot 
+zfs snapshot fastflash/home@backup_snapshot
+
+$ZFS_RESTIC backup /home/.zfs/snapshot/backup_snapshot/ --exclude="/home/.zfs/snapshot/backup_snapshot/marcel/.steam"  --exclude="/home/.zfs/snapshot/backup_snapshot/marcel/.bitcoin" --exclude="/home/.zfs/snapshot/backup_snapshot/marcel/.cache" 
+
 
 ## Backup /var/lib/libvirt/images
 set +e
-btrfs subvol delete /var/lib/libvirt/images/snapshot 2>/dev/null
+zfs destroy fastflash/vms@backup_snapshot
 set -e
-btrfs subvol snapshot -r /var/lib/libvirt/images /var/lib/libvirt/images/snapshot && \
-$ZFS_RESTIC backup /var/lib/libvirt/images/snapshot/ && \
-btrfs subvol delete /var/lib/libvirt/images/snapshot 
+zfs snapshot fastflash/vms@backup_snapshot
+$ZFS_RESTIC backup /var/lib/libvirt/images/.zfs/snapshot/backup_snapshot/ 
 
-## Backup /var/lib/libvirt/images/nosnapshot
-set +e
-btrfs subvol delete /var/lib/libvirt/images/nosnapshot/snapshot 2>/dev/null
-set -e
-btrfs subvol snapshot -r /var/lib/libvirt/images/nosnapshot /var/lib/libvirt/images/nosnapshot/snapshot && \
-$ZFS_RESTIC backup /var/lib/libvirt/images/nosnapshot/snapshot/ && \
-btrfs subvol delete /var/lib/libvirt/images/nosnapshot/snapshot 
+### Backup /var/lib/libvirt/images/nosnapshot
+#set +e
+#btrfs subvol delete /var/lib/libvirt/images/nosnapshot/snapshot 2>/dev/null
+#set -e
+#btrfs subvol snapshot -r /var/lib/libvirt/images/nosnapshot /var/lib/libvirt/images/nosnapshot/snapshot && \
+#$ZFS_RESTIC backup /var/lib/libvirt/images/nosnapshot/snapshot/ && \
+#btrfs subvol delete /var/lib/libvirt/images/nosnapshot/snapshot 
 
 
 ## Backup /var/lib/libvirt/images/sata-images

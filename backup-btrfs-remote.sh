@@ -25,29 +25,46 @@ btrfs subvol snapshot -r / /remote-snapshot && \
 $REMOTE_RESTIC backup /remote-snapshot/ --exclude="/root/.cache" && \
 btrfs subvol delete /remote-snapshot 
 
+### Backup /home
+#set +e
+#btrfs subvol delete /home/remote-snapshot 2>/dev/null
+#set -e
+#btrfs subvol snapshot -r /home /home/remote-snapshot && \
+#$REMOTE_RESTIC backup /home/remote-snapshot/ --exclude="/home/snapshot/marcel/.steam"  --exclude="/home/snapshot/marcel/.bitcoin" --exclude="/home/snapshot/marcel/.cache" && \
+#btrfs subvol delete /home/remote-snapshot 
+#
+### Backup /var/lib/libvirt/images
+#set +e
+#btrfs subvol delete /var/lib/libvirt/images/remote-snapshot 2>/dev/null
+#set -e
+#btrfs subvol snapshot -r /var/lib/libvirt/images /var/lib/libvirt/images/remote-snapshot && \
+#$REMOTE_RESTIC backup /var/lib/libvirt/images/remote-snapshot/ && \
+#btrfs subvol delete /var/lib/libvirt/images/remote-snapshot 
+#
+### Backup /var/lib/libvirt/images/nosnapshot
+#set +e
+#btrfs subvol delete /var/lib/libvirt/images/nosnapshot/remote-snapshot 2>/dev/null
+#set -e
+#btrfs subvol snapshot -r /var/lib/libvirt/images/nosnapshot /var/lib/libvirt/images/nosnapshot/remote-snapshot && \
+#$REMOTE_RESTIC backup /var/lib/libvirt/images/nosnapshot/remote-snapshot/ && \
+#btrfs subvol delete /var/lib/libvirt/images/nosnapshot/remote-snapshot
+
 ## Backup /home
 set +e
-btrfs subvol delete /home/remote-snapshot 2>/dev/null
+zfs destroy fastflash/home@remote_snapshot
 set -e
-btrfs subvol snapshot -r /home /home/remote-snapshot && \
-$REMOTE_RESTIC backup /home/remote-snapshot/ --exclude="/home/snapshot/marcel/.steam"  --exclude="/home/snapshot/marcel/.bitcoin" --exclude="/home/snapshot/marcel/.cache" && \
-btrfs subvol delete /home/remote-snapshot 
+zfs snapshot fastflash/home@remote_snapshot
+
+$REMOTE_RESTIC backup /home/.zfs/snapshot/remote_snapshot/ --exclude="/home/.zfs/snapshot/remote_snapshot/marcel/.steam"  --exclude="/home/.zfs/remote_snapshot/marcel/.bitcoin" --exclude="/home/.zfs/snapshot/remote_snapshot/marcel/.cache" 
+
 
 ## Backup /var/lib/libvirt/images
 set +e
-btrfs subvol delete /var/lib/libvirt/images/remote-snapshot 2>/dev/null
+zfs destroy fastflash/vms@remote_snapshot
 set -e
-btrfs subvol snapshot -r /var/lib/libvirt/images /var/lib/libvirt/images/remote-snapshot && \
-$REMOTE_RESTIC backup /var/lib/libvirt/images/remote-snapshot/ && \
-btrfs subvol delete /var/lib/libvirt/images/remote-snapshot 
+zfs snapshot fastflash/vms@remote_snapshot
+$REMOTE_RESTIC backup /var/lib/libvirt/images/.zfs/snapshot/remote_snapshot/ 
 
-## Backup /var/lib/libvirt/images/nosnapshot
-set +e
-btrfs subvol delete /var/lib/libvirt/images/nosnapshot/remote-snapshot 2>/dev/null
-set -e
-btrfs subvol snapshot -r /var/lib/libvirt/images/nosnapshot /var/lib/libvirt/images/nosnapshot/remote-snapshot && \
-$REMOTE_RESTIC backup /var/lib/libvirt/images/nosnapshot/remote-snapshot/ && \
-btrfs subvol delete /var/lib/libvirt/images/nosnapshot/remote-snapshot
 
 
 ## Backup /var/lib/libvirt/images/sata-images
