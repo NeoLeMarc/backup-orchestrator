@@ -1,6 +1,9 @@
 #!/bin/bash
 # Author: Marcel Noe (https://github.com/NeoLeMarc)
 # License: GPL v3
+#set -e
+#set -x
+export PATH=/opt/emulex/ocmanager/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:PATH
 
 # Copy data of VM filesystems that should also be backed up separately
 #
