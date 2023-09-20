@@ -16,9 +16,9 @@ mount /mnt/rz-backup/polarstern-backup
 
 ## Create snapshot
 set +e
-zfs destroy vault/encrypted@backup_snapshot
+zfs destroy sataflash/encrypted@backup_snapshot
 set -e
-zfs snapshot vault/encrypted@backup_snapshot
+zfs snapshot sataflash/encrypted@backup_snapshot
 
 ## Backups that are synced to cloud
 $REMOTE_RESTIC_VAULT backup /vault/encrypted/.zfs/snapshot/backup_snapshot/jennifer_marcel && \

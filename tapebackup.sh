@@ -3,8 +3,8 @@
 echo "Configuration: $1"
 
 # Rotate snapshots
-zfs destroy vault/encrypted@amanda_$1
-zfs snapshot vault/encrypted@amanda_$1
+zfs destroy sataflash/encrypted@amanda_$1
+zfs snapshot sataflash/encrypted@amanda_$1
 
 #zfs destroy vault/backup@amanda_$1
 #zfs snapshot vault/backup@amanda_$1
@@ -33,16 +33,16 @@ read
 
 # Trigger amanda
 #ssh backup@miranda "/usr/sbin/amcheck $1"
-#su backup -c "/usr/sbin/amcheck $1"
+su backup -c "/usr/sbin/amcheck $1"
 
-#echo "Check done, proceeding with dump"
-#echo "Press Enter"
+echo "Check done, proceeding with dump"
+echo "Press Enter"
 #read
 #ssh backup@miranda "/usr/sbin/amdump $1"
 su backup -c "/usr/sbin/amdump $1"
 
 # Delete snapshot
-zfs destroy vault/encrypted@amanda_$1
+zfs destroy sataflash/encrypted@amanda_$1
 #zfs destroy vault/backup@amanda_$1
 btrfs subvol delete /snapshot_amanda_$1
 #btrfs subvol delete /home/snapshot_amanda_$1

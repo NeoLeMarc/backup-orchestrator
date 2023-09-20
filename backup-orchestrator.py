@@ -100,13 +100,13 @@ class BackupSequence(object):
                 summary = ""
                 if result.successful:
                     summary += "\n****** [%s] - OK\n" % (result.taskName)
-                    summary += result.stderr#.decode("utf-8")
-                    summary += result.stdout#.decode("utf-8")
+                    summary += result.stderr.decode("utf-8")
+                    summary += result.stdout.decode("utf-8")
                     summary += "\n-------------------------------------\n"
                 else: 
                     summary += "\n****** [%s] - ERROR\n" % (result.taskName)
-                    summary += result.stderr#.decode("utf-8")
-                    summary += result.stdout#.decode("utf-8")
+                    summary += result.stderr.decode("utf-8")
+                    summary += result.stdout.decode("utf-8")
                     summary += "\n-------------------------------------\n"
                     
                     self.sendErrorMail(result)
@@ -115,7 +115,7 @@ class BackupSequence(object):
         self.sendSummary()
                 
     def sendErrorMail(self, result):
-        self.mailer.send("[BACKUP ERROR] Backup task (%s) failed" % result.taskName, result.stderr)#.decode("utf-8"))
+        self.mailer.send("[BACKUP ERROR] Backup task (%s) failed" % result.taskName, result.stderr.decode("utf-8"))
 
     def sendSummary(self):
         self.mailer.send("[SUMMARY OF BACKUP] Backup completed", self.summary)
