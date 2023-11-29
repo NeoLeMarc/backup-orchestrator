@@ -21,8 +21,8 @@ set -e
 zfs snapshot sataflash/encrypted@backup_snapshot
 
 ## Backups that are synced to cloud
-$REMOTE_RESTIC_VAULT backup /vault/encrypted/.zfs/snapshot/backup_snapshot/jennifer_marcel && \
-$REMOTE_RESTIC_VAULT backup /vault/encrypted/.zfs/snapshot/backup_snapshot/jennifer && \
+#$REMOTE_RESTIC_VAULT backup /vault/encrypted/.zfs/snapshot/backup_snapshot/jennifer_marcel && \
+#$REMOTE_RESTIC_VAULT backup /vault/encrypted/.zfs/snapshot/backup_snapshot/jennifer && \
 $REMOTE_RESTIC_VAULT backup /vault/encrypted/.zfs/snapshot/backup_snapshot/*.sh && \
 
 
