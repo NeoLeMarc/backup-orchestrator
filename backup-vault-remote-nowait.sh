@@ -5,8 +5,7 @@
 export GODEBUG=asyncpreemptoff=1 # Fix for bugs caused by preempted interrupts
 
 ## Wakeup rz-backup
-wakeonlan -i 10.10.1.222 00:11:32:c2:0a:4f 
-sleep 400
+wakeonlan -i 10.10.1.222 00:11:32:c2:0a:4f
 
 ## Prepare and mount
 date
@@ -21,8 +20,8 @@ set -e
 zfs snapshot sataflash/encrypted@backup_snapshot
 
 ## Backups that are synced to cloud
-#$REMOTE_RESTIC_VAULT backup /vault/encrypted/.zfs/snapshot/backup_snapshot/jennifer_marcel && \
-#$REMOTE_RESTIC_VAULT backup /vault/encrypted/.zfs/snapshot/backup_snapshot/jennifer && \
+$REMOTE_RESTIC_VAULT backup /vault/encrypted/.zfs/snapshot/backup_snapshot/jennifer_marcel && \
+$REMOTE_RESTIC_VAULT backup /vault/encrypted/.zfs/snapshot/backup_snapshot/jennifer && \
 $REMOTE_RESTIC_VAULT backup /vault/encrypted/.zfs/snapshot/backup_snapshot/*.sh && \
 
 
