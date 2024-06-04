@@ -130,6 +130,9 @@ if __name__ == "__main__":
         tasks.append(BackupTask("BTRFS local", "./backup-btrfs-local.sh"))
         tasks.append(BackupTask("Vault remote", "./backup-vault-remote.sh"))
         tasks.append(BackupTask("BTRFS remote", "./backup-btrfs-remote.sh"))
+
+        tasks.append(BackupTask("Vault storagebox", "./backup-vault-remote-storagebox.sh"))
+        tasks.append(BackupTask("BTRFS storagebox", "./backup-btrfs-remote-storagebox.sh"))
         sequence = BackupSequence(tasks)
         sequence.run()
         print("Done")
